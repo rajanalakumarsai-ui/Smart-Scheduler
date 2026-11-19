@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#edf4f7">
+    <title>Smart AI Planner</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #203348;
+            --muted: #657889;
+            --paper: #edf4f7;
+            --paper-strong: #fbfdff;
+            --green: #287b78;
+            --green-dark: #1e5d60;
+            --green-soft: #e7f3f1;
+            --line: #d6e2e8;
+            --coral: #d28a6c;
+            --gold: #bd9857;
+            --shadow: rgba(39, 67, 87, 0.12);
+        }
+
+                * { box-sizing: border-box; }
+
+                body {
+                    margin: 0;
+                    min-height: 100vh;
+                    background:
+                        radial-gradient(ellipse at 12% 8%, rgba(119, 190, 185, 0.25), transparent 32%),
+                        radial-gradient(ellipse at 92% 78%, rgba(168, 183, 218, 0.24), transparent 30%),
+                        linear-gradient(135deg, #edf5f5 0%, #edf1f8 48%, #f8faff 100%);
+                    background-attachment: fixed;
+                    color: var(--ink);
+                    font-family: Georgia, "Times New Roman", serif;
+                }
+
+        button, input, textarea { font: inherit; }
+
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: minmax(260px, 0.8fr) minmax(360px, 1.2fr);
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 34px clamp(22px, 5vw, 72px);
+            gap: clamp(38px, 8vw, 120px);
+            align-items: center;
+        }
+
+        .brand {
+            position: absolute;
+            top: 35px;
+            left: max(22px, calc((100vw - 1116px) / 2));
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--ink);
+            font: 700 14px/1.2 Arial, sans-serif;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .brand-mark {
+            width: 29px;
+            height: 29px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green), #56a19a);
+            color: white;
+            font-size: 15px;
+            box-shadow: 0 10px 20px rgba(40, 123, 120, 0.24);
+        }
+
+        .intro {
+            align-self: center;
+            padding-top: 54px;
+        }
+
+        .eyebrow {
+            margin: 0 0 19px;
+            color: var(--green);
+            font: 700 11px/1.4 Arial, sans-serif;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .intro h1 {
+            max-width: 470px;
+            margin: 0;
+            font-size: clamp(48px, 6vw, 78px);
+            font-weight: 400;
+            line-height: 0.99;
+        }
+
+        .intro h1 span { color: var(--green); font-style: italic; }
+
+        .intro-copy {
+            max-width: 350px;
+            margin: 25px 0 0;
+            color: var(--muted);
+            font: 16px/1.7 Arial, sans-serif;
+        }
+
+        .form-panel {
+            width: 100%;
+            max-width: 620px;
+            justify-self: end;
+            padding: clamp(27px, 4vw, 48px);
+            border: 1px solid rgba(70, 101, 125, 0.14);
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 18px 60px var(--shadow);
+        }
+
+        .step-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 27px;
+            color: var(--muted);
+            font: 700 11px/1.4 Arial, sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .step-dots { display: flex; gap: 7px; }
+        .step-dots i { width: 7px; height: 7px; border-radius: 50%; background: #d9dfd8; }
+        .step-dots i.active { background: var(--green); }
+
+        .screen { display: none; animation: appear 300ms ease both; }
+        .screen.active { display: block; }
+
+        .screen h2 {
+            margin: 0 0 12px;
+            font-size: clamp(30px, 4vw, 42px);
+            font-weight: 400;
+            line-height: 1.08;
+            letter-spacing: -0.04em;
+        }
+
+        .screen-copy {
+            margin: 0 0 27px;
+            color: var(--muted);
+            font: 14px/1.6 Arial, sans-serif;
+        }
+
+        .field { margin: 0 0 17px; }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: #34463f;
+            font: 700 12px/1.4 Arial, sans-serif;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            outline: none;
+            background: #fff;
+            color: var(--ink);
+            font: 14px/1.45 Arial, sans-serif;
+            transition: border-color 150ms ease, box-shadow 150ms ease;
+        }
+
+        textarea { min-height: 88px; resize: vertical; }
+        input:focus, textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(40, 123, 120, 0.14); }
+        input::placeholder, textarea::placeholder { color: #9aa49e; }
+
+        select {
+            width: 100%;
+            min-height: 43px;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            outline: none;
+            background: white;
+            color: var(--ink);
+            font: 14px/1.45 Arial, sans-serif;
+        }
+
+        select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(40, 123, 120, 0.14); }
+        .subject-list { display: grid; gap: 12px; max-height: 340px; overflow-y: auto; padding-right: 3px; }
+
+        .subject-row {
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            background: #f8fbfc;
+        }
+
+        .subject-row-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .subject-row-title { color: var(--green); font: 700 11px/1.4 Arial, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
+        .remove-subject { padding: 4px 0 4px 8px; border: 0; background: transparent; color: #9b5948; cursor: pointer; font: 12px/1.4 Arial, sans-serif; }
+        .subject-fields { display: grid; grid-template-columns: 1.1fr 1fr; gap: 10px; }
+        .subject-fields .field { margin: 0; }
+        .subject-fields .complexity-field { grid-column: 1 / -1; }
+        .subject-fields input { min-height: 43px; }
+        .helper-text { margin: 8px 0 0; color: var(--muted); font: 12px/1.5 Arial, sans-serif; }
+        .inline-control { display: flex; align-items: center; gap: 12px; }
+        .inline-control input { max-width: 120px; }
+
+        .dashboard-active .page { max-width: 1450px; grid-template-columns: minmax(220px, 0.55fr) minmax(600px, 1.45fr); gap: 38px; align-items: start; padding-top: 90px; }
+        .dashboard-active .form-panel { max-width: 930px; }
+        .dashboard-stepper { margin: 22px 0 26px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: rgba(248, 251, 252, 0.9); }
+        .dashboard-stepper-heading { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 9px; color: var(--muted); font: 700 11px/1.4 Arial, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
+        .dashboard-step-progress { height: 6px; overflow: hidden; border-radius: 99px; background: #e4edf1; }
+        .dashboard-step-progress-fill { width: 20%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), #70b4a9); transition: width 180ms ease; }
+        .dashboard-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
+        .dashboard-tab { min-width: 0; min-height: 38px; padding: 7px 5px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; font: 700 11px/1.3 Arial, sans-serif; }
+        .dashboard-tab:hover { background: white; color: var(--green-dark); }
+        .dashboard-tab.active { border-color: #c9dfda; background: white; color: var(--green-dark); box-shadow: 0 3px 9px rgba(39, 67, 87, 0.07); }
+        .dashboard-tab:focus-visible { outline: 3px solid rgba(40, 123, 120, 0.25); outline-offset: 2px; }
+        .dashboard-step-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; }
+        .dashboard-step-actions .button { min-height: 38px; padding: 0 12px; font-size: 12px; }
+        .dashboard-step-actions .button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+        [data-dashboard-step][hidden] { display: none; }
+        [data-dashboard-step]:not([hidden]) { animation: appear 220ms ease both; }
+        .dashboard-section { margin: 20px 0; padding: 18px; border: 1px solid rgba(70, 101, 125, 0.12); border-radius: 14px; background: rgba(255, 255, 255, 0.76); box-shadow: 0 8px 24px rgba(39, 67, 87, 0.045); }
+        .dashboard-section h3 { margin: 0 0 12px; color: var(--ink); font-size: 21px; font-weight: 400; }
+        .dashboard-section-copy { margin: -5px 0 13px; color: var(--muted); font: 12px/1.5 Arial, sans-serif; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .dashboard-card { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: #fbfdff; }
+        .dashboard-card h4 { margin: 0 0 10px; color: var(--green-dark); font: 700 12px/1.4 Arial, sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
+        .dashboard-list { display: grid; gap: 9px; }
+        .dashboard-empty { margin: 0; color: var(--muted); font: 13px/1.55 Arial, sans-serif; }
+        .task-row { display: flex; align-items: flex-start; gap: 9px; color: var(--ink); font: 13px/1.5 Arial, sans-serif; }
+        .task-row input { flex: 0 0 auto; width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--green); }
+        .task-row.is-complete span { color: var(--muted); text-decoration: line-through; }
+        .exam-row, .session-row, .reminder-row, .resource-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid #edf0ea; color: var(--ink); font: 12px/1.5 Arial, sans-serif; }
+        .exam-row:last-child, .session-row:last-child, .reminder-row:last-child, .resource-row:last-child { border-bottom: 0; }
+        .exam-date-label, .muted-label { flex: 0 0 auto; color: var(--muted); font-size: 11px; }
+        .progress-row { margin: 12px 0; }
+        .progress-label { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 5px; color: var(--ink); font: 12px/1.4 Arial, sans-serif; }
+        .progress-track { height: 8px; overflow: hidden; border-radius: 99px; background: #e4edf1; }
+        .progress-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), #70b4a9); transition: width 180ms ease; }
+        .chart-row { display: grid; grid-template-columns: minmax(75px, 0.7fr) 2fr 38px; align-items: center; gap: 9px; margin: 9px 0; color: var(--ink); font: 11px/1.4 Arial, sans-serif; }
+        .chart-track { height: 11px; overflow: hidden; border-radius: 99px; background: #e4edf1; }
+        .chart-bar { height: 100%; border-radius: inherit; background: var(--coral); }
+        .dashboard-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .dashboard-actions .button { min-height: 40px; padding: 0 12px; font-size: 12px; }
+        .dashboard-form { display: grid; grid-template-columns: 1fr 1fr auto; align-items: end; gap: 9px; }
+        .dashboard-form .field { min-width: 0; margin: 0; }
+        .dashboard-form .button { min-height: 43px; }
+        .dashboard-form input, .dashboard-form select { min-height: 43px; }
+        .resource-row a { min-width: 0; overflow-wrap: anywhere; color: var(--green); font-weight: 700; }
+        .resource-remove { flex: 0 0 auto; border: 0; background: transparent; color: #9b5948; cursor: pointer; font: 12px Arial, sans-serif; }
+        .schedule-day .task-row { margin-top: 8px; }
+        .priority-toggle { display: flex; align-items: center; gap: 8px; margin: 8px 0 0; color: var(--green-dark); font: 700 12px/1.4 Arial, sans-serif; }
+        .priority-toggle input { width: 16px; height: 16px; margin: 0; padding: 0; accent-color: var(--green); }
+        .schedule-list { display: grid; gap: 9px; max-height: 450px; overflow-y: auto; }
+        .schedule-day { padding: 12px 14px; border-left: 3px solid var(--green); background: #f1f7f7; }
+        .schedule-day.exam-day { border-left-color: var(--coral); }
+        .schedule-date { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; color: var(--ink); font: 700 12px/1.4 Arial, sans-serif; }
+        .exam-badge { color: #a65e48; font: 700 10px/1.4 Arial, sans-serif; text-transform: uppercase; }
+        .schedule-subjects { display: flex; flex-wrap: wrap; gap: 6px; }
+        .schedule-item { padding: 5px 8px; border-radius: 3px; background: white; color: #43544b; font: 12px/1.4 Arial, sans-serif; }
+
+        .materials-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+        .materials-section h3 { margin: 0 0 6px; font-size: 22px; font-weight: 400; }
+        .materials-copy { margin: 0 0 13px; color: var(--muted); font: 12px/1.5 Arial, sans-serif; }
+        .file-drop { display: grid; min-height: 90px; padding: 16px; place-items: center; border: 1px dashed #9eafa3; border-radius: 4px; background: #fbfcfa; text-align: center; transition: background 150ms ease, border-color 150ms ease; }
+        .file-drop.dragging, .file-drop:focus-within { border-color: var(--green); background: #edf7f6; }
+        .file-picker { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+        .file-picker:focus-visible + .file-drop-label .file-drop { outline: 3px solid rgba(53, 107, 84, 0.24); outline-offset: 2px; }
+        .file-drop-label { color: var(--muted); font: 13px/1.6 Arial, sans-serif; }
+        .file-drop-label strong { display: block; color: var(--green); font-size: 14px; }
+        .file-list { display: grid; gap: 7px; margin: 12px 0 0; padding: 0; list-style: none; }
+        .file-item { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 11px; background: #f5f7f3; }
+        .file-info { min-width: 0; color: var(--ink); font: 12px/1.45 Arial, sans-serif; }
+        .file-name { display: block; overflow: hidden; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+        .file-size { color: var(--muted); }
+        .file-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; }
+        .study-file, .remove-file { padding: 6px; border: 0; background: transparent; cursor: pointer; font: 700 12px/1.4 Arial, sans-serif; }
+        .study-file { color: var(--green); }
+        .remove-file { flex: 0 0 auto; padding: 6px; border: 0; background: transparent; color: #9b5948; cursor: pointer; font: 12px/1.4 Arial, sans-serif; }
+        .study-viewer { margin-top: 14px; border: 1px solid var(--line); background: white; }
+        .study-viewer[hidden] { display: none; }
+        .viewer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+        .viewer-title { min-width: 0; overflow: hidden; color: var(--ink); font: 700 12px/1.4 Arial, sans-serif; text-overflow: ellipsis; white-space: nowrap; }
+        .viewer-close { flex: 0 0 auto; padding: 4px 8px; border: 1px solid var(--line); border-radius: 3px; background: white; color: var(--ink); cursor: pointer; font: 12px/1.4 Arial, sans-serif; }
+        .viewer-content { min-height: 180px; max-height: 520px; overflow: auto; }
+        .viewer-content iframe { display: block; width: 100%; height: 520px; border: 0; }
+        .viewer-content img { display: block; max-width: 100%; max-height: 520px; margin: 0 auto; object-fit: contain; }
+        .viewer-content pre { margin: 0; padding: 16px; color: var(--ink); font: 13px/1.65 Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+        .viewer-message { padding: 18px; color: var(--muted); font: 13px/1.6 Arial, sans-serif; }
+        .viewer-download { display: inline-block; margin-top: 10px; color: var(--green); font-weight: 700; }
+
+        .actions { display: flex; gap: 11px; margin-top: 25px; }
+
+        .button {
+            min-height: 48px;
+            padding: 0 19px;
+            border: 1px solid var(--green);
+            border-radius: 11px;
+            background: linear-gradient(135deg, var(--green-dark), var(--green));
+            color: white;
+            cursor: pointer;
+            font: 700 13px/1 Arial, sans-serif;
+            transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+            box-shadow: 0 12px 18px rgba(40, 123, 120, 0.2);
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.02);
+            box-shadow: 0 14px 20px rgba(40, 123, 120, 0.25);
+        }
+        .button.secondary { background: white; color: var(--green); box-shadow: none; }
+        .button.secondary:hover { background: #edf6f5; }
+        .button.primary { flex: 1; }
+
+        .success-mark {
+            display: grid;
+            width: 54px;
+            height: 54px;
+            margin-bottom: 21px;
+            place-items: center;
+            border-radius: 50%;
+            background: #e4f2ee;
+            color: var(--green);
+            font: 26px/1 Arial, sans-serif;
+        }
+
+        .profile-summary {
+            padding: 15px;
+            border-left: 3px solid var(--coral);
+            background: #f7f6f1;
+            color: var(--muted);
+            font: 13px/1.6 Arial, sans-serif;
+        }
+
+        .status-message { min-height: 20px; margin: 0 0 15px; color: var(--muted); font: 13px/1.5 Arial, sans-serif; }
+        .status-message.success { color: var(--green); }
+        .status-message.error { color: #a64d43; }
+        .status-message.error { color: #a13e32; }
+        .status-message.success { color: var(--green); }
+        .account-email { margin: -12px 0 20px; color: var(--muted); font: 13px/1.5 Arial, sans-serif; overflow-wrap: anywhere; }
+        .account-actions { display: flex; justify-content: flex-end; margin-top: 16px; }
+
+        @keyframes appear {
+            from { opacity: 0; transform: translateY(7px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 760px) {
+            .page { grid-template-columns: 1fr; gap: 30px; padding: 95px 22px 30px; }
+            .dashboard-active .page { grid-template-columns: 1fr; gap: 30px; padding: 95px 22px 30px; }
+            .intro { padding-top: 0; }
+            .intro h1 { max-width: 540px; font-size: clamp(48px, 12vw, 68px); }
+            .intro-copy { margin-top: 16px; }
+            .form-panel { justify-self: stretch; max-width: none; }
+            .dashboard-active .form-panel { max-width: none; }
+            .dashboard-form, .dashboard-grid { grid-template-columns: 1fr; }
+            .dashboard-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 420px) {
+            .page { padding-inline: 16px; }
+            .form-panel { padding: 24px 20px; }
+            .actions { flex-direction: column-reverse; }
+            .actions .button { width: 100%; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+    <link rel="stylesheet" href="assets/dashboardkit/assets/css/style.css">
+    <link rel="stylesheet" href="assets/dashboardkit/assets/fonts/feather.css">
+    <link rel="stylesheet" href="assets/dashboardkit/study-planner.css">
+</head>
+<body data-pc-preset="preset-1" data-pc-sidebar-theme="dark" data-pc-header-theme="light" data-pc-theme="light">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">S</span> Smart AI</div>
+    <main class="page">
+        <section class="intro" aria-labelledby="welcome-title">
+            <p class="eyebrow">A little space to be you</p>
+            <h1 id="welcome-title">Hello there,<br><span>good to meet you.</span></h1>
+            <p class="intro-copy">Turn your goals into a study plan shaped around your subjects and exam dates.</p>
+            <nav class="dashboard-sidebar-nav" aria-label="Study dashboard">
+                <p class="sidebar-nav-heading">Workspace</p>
+                <button class="dashboard-tab active" type="button" data-dashboard-tab="overview" aria-current="step"><span class="feather icon icon-grid" aria-hidden="true"></span>Overview</button>
+                <button class="dashboard-tab" type="button" data-dashboard-tab="schedule"><span class="feather icon icon-calendar" aria-hidden="true"></span>Study plan</button>
+                <button class="dashboard-tab" type="button" data-dashboard-tab="progress"><span class="feather icon icon-bar-chart-2" aria-hidden="true"></span>Progress</button>
+                <button class="dashboard-tab" type="button" data-dashboard-tab="materials"><span class="feather icon icon-folder" aria-hidden="true"></span>Materials</button>
+                <a class="dashboard-tab" href="/assistant.html"><span class="feather icon icon-message-circle" aria-hidden="true"></span>AI search assistant</a>
+                <div class="sidebar-user">
+                    <span class="sidebar-avatar" aria-hidden="true">S</span>
+                    <span><strong>Study space</strong><small>Your personal planner</small></span>
+                </div>
+            </nav>
+        </section>
+
+        <section class="form-panel" aria-label="Welcome and profile setup">
+            <div class="step-meta">
+                <span id="step-label">Your account</span>
+                <span class="step-dots" aria-hidden="true"><i class="active"></i><i></i><i></i></span>
+            </div>
+
+                <div class="screen active" id="auth-screen">
+                    <h2 id="auth-title">Sign in</h2>
+                    <p class="screen-copy" id="auth-copy">Sign in to continue to your saved study plan.</p>
+                    <p class="status-message" id="auth-status" role="status" aria-live="polite"></p>
+                    <form id="auth-form">
+                        <div class="field">
+                            <label for="auth-email">Email address</label>
+                            <input id="auth-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+                        <div class="field">
+                            <label for="auth-password">Password</label>
+                            <input id="auth-password" name="password" type="password" autocomplete="current-password" required>
+                        </div>
+                        <button class="button primary" id="auth-submit-button" type="submit">Sign in</button>
+                    </form>
+                    <div class="actions">
+                        <button class="button secondary" id="auth-mode-button" type="button">Create an account</button>
+                    </div>
+                </div>
+
+                <form class="screen" id="profile-form">
+                    <h2>Create your profile.</h2>
+                    <p class="screen-copy">A few details help people get to know you.</p>
+                    <p class="account-email" id="profile-email"></p>
+                    <div class="field">
+                        <label for="name">Your name</label>
+                        <input id="name" name="name" type="text" placeholder="e.g. Alex Morgan" autocomplete="name" required>
+                    </div>
+                    <div class="field">
+                        <label for="about">A little about you <span style="font-weight:400;color:#87928b">(optional)</span></label>
+                        <textarea id="about" name="about" maxlength="240" placeholder="What are you interested in?"></textarea>
+                    </div>
+                    <p class="status-message" id="profile-status" role="status" aria-live="polite"></p>
+                    <div class="actions">
+                        <button class="button primary" type="submit">Save profile <span aria-hidden="true">→</span></button>
+                    </div>
+                </form>
+
+            <form class="screen" id="requirements-form">
+                <h2>What are you studying?</h2>
+                <p class="screen-copy">Add each subject, its exam date, and how challenging it feels. We’ll use these to balance your study time.</p>
+                <div class="subject-list" id="subject-list"></div>
+                <div class="actions" style="margin-top:12px">
+                    <button class="button secondary" id="add-subject-button" type="button">+ Add subject</button>
+                </div>
+                <div class="field" style="margin-top:20px">
+                    <label for="daily-hours">Study time available each day</label>
+                    <div class="inline-control">
+                        <input id="daily-hours" name="dailyHours" type="number" min="0.5" max="12" step="0.5" value="2" required>
+                        <span class="helper-text" style="margin:0">hours per day</span>
+                    </div>
+                </div>
+                <p class="status-message" id="study-status" role="status" aria-live="polite"></p>
+                <div class="actions">
+                    <button class="button secondary" id="requirements-back-button" type="button">Back</button>
+                    <button class="button primary" type="submit">Build my schedule <span aria-hidden="true">→</span></button>
+                </div>
+            </form>
+
+            <div class="screen" id="schedule-screen" aria-live="polite">
+                <span class="success-mark" aria-hidden="true">✓</span>
+                <h2 id="schedule-title">Your study plan is ready.</h2>
+                <p class="screen-copy" id="schedule-summary"></p>
+                <p class="status-message" id="workspace-status" role="status" aria-live="polite"></p>
+                <div class="dashboard-stepper">
+                    <p class="dashboard-stepper-heading"><span id="dashboard-step-label">Step 1 of 4 · Overview</span><span>Study dashboard</span></p>
+                    <div class="dashboard-step-progress" role="progressbar" aria-label="Dashboard step progress" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1">
+                        <div class="dashboard-step-progress-fill" id="dashboard-step-progress-fill"></div>
+                    </div>
+                    <div class="dashboard-step-actions">
+                        <button class="button secondary" id="dashboard-previous-button" type="button" disabled>← Previous</button>
+                        <button class="button" id="dashboard-next-button" type="button">Next: Study plan →</button>
+                    </div>
+                </div>
+                <section class="dashboard-section" data-dashboard-step="overview" aria-labelledby="dashboard-title">
+                    <h3 id="dashboard-title">Your dashboard</h3>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h4>Today's tasks</h4>
+                            <div class="dashboard-list" id="today-tasks"></div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h4>Upcoming exams</h4>
+                            <div class="dashboard-list" id="upcoming-exams"></div>
+                        </div>
+                    </div>
+                </section>
+                <section class="dashboard-section" data-dashboard-step="progress" aria-labelledby="progress-title" hidden>
+                    <h3 id="progress-title">Subject progress</h3>
+                    <div id="subject-progress"></div>
+                </section>
+                <section class="dashboard-section" data-dashboard-step="progress" aria-labelledby="analytics-title" hidden>
+                    <h3 id="analytics-title">This week's study</h3>
+                    <p class="dashboard-section-copy" id="weekly-total">Hours completed in the last 7 days.</p>
+                    <div id="weekly-chart" role="img" aria-label="Weekly study hours by subject"></div>
+                    <div class="dashboard-grid" style="margin-top:14px">
+                        <div class="dashboard-card">
+                            <h4>Completed sessions</h4>
+                            <div class="dashboard-list" id="completed-sessions"></div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h4>Study materials</h4>
+                            <div class="dashboard-list" id="dashboard-resources"></div>
+                        </div>
+                    </div>
+                </section>
+                <section class="dashboard-section" data-dashboard-step="overview" aria-labelledby="reminders-title">
+                    <h3 id="reminders-title">Reminders</h3>
+                    <p class="dashboard-section-copy">In-app alerts appear while this planner is open. Email reminders aren't configured.</p>
+                    <form class="dashboard-form" id="reminder-form">
+                        <div class="field">
+                            <label for="reminder-title">Reminder</label>
+                            <input id="reminder-title" type="text" maxlength="100" placeholder="Revise Math" required>
+                        </div>
+                        <div class="field">
+                            <label for="reminder-time">Date and time</label>
+                            <input id="reminder-time" type="datetime-local" required>
+                        </div>
+                        <button class="button" type="submit">Set alert</button>
+                    </form>
+                    <div class="dashboard-list" id="reminder-list" style="margin-top:12px"></div>
+                </section>
+                <section class="dashboard-section" data-dashboard-step="materials" aria-labelledby="resources-title" hidden>
+                    <h3 id="resources-title">Add a study link</h3>
+                    <p class="dashboard-section-copy">Save notes, videos, and other web resources alongside your subjects.</p>
+                    <form class="dashboard-form" id="resource-form">
+                        <div class="field">
+                            <label for="resource-subject">Subject</label>
+                            <select id="resource-subject" required></select>
+                        </div>
+                        <div class="field">
+                            <label for="resource-url">YouTube or other link</label>
+                            <input id="resource-url" type="url" placeholder="https://…" required>
+                        </div>
+                        <button class="button" type="submit">Save link</button>
+                    </form>
+                    <div class="dashboard-list" id="resource-list" style="margin-top:12px"></div>
+                </section>
+                <div class="dashboard-actions" data-dashboard-step="schedule" hidden>
+                    <button class="button secondary" id="share-schedule-button" type="button">Share schedule</button>
+                    <button class="button secondary" id="calendar-export-button" type="button">Export calendar (.ics)</button>
+                </div>
+                <section class="dashboard-section" data-dashboard-step="schedule" aria-labelledby="schedule-list-title" hidden>
+                    <h3 id="schedule-list-title">Full study schedule</h3>
+                    <div class="schedule-list" id="schedule-list"></div>
+                </section>
+                <section class="materials-section" data-dashboard-step="materials" aria-labelledby="materials-title" hidden>
+                    <h3 id="materials-title">Study materials</h3>
+                    <p class="materials-copy">Add notes, readings, or practice papers. Files are saved to your account on this server (up to 5 MB each).</p>
+                    <div class="field">
+                        <label for="file-subject">Attach files to subject</label>
+                        <select id="file-subject"></select>
+                    </div>
+                    <input class="file-picker" id="study-files" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.md,.jpg,.jpeg,.png">
+                    <label class="file-drop-label" for="study-files">
+                        <span class="file-drop" id="file-drop-zone" tabindex="-1">
+                            <span><strong>Choose files or drop them here</strong>PDF, Word, PowerPoint, text, or images</span>
+                        </span>
+                    </label>
+                    <ul class="file-list" id="file-list" aria-live="polite"></ul>
+                    <div class="study-viewer" id="study-viewer" hidden>
+                        <div class="viewer-head">
+                            <span class="viewer-title" id="viewer-title"></span>
+                            <button class="viewer-close" id="close-viewer-button" type="button">Close</button>
+                        </div>
+                        <div class="viewer-content" id="viewer-content"></div>
+                    </div>
+                </section>
+                <div class="actions">
+                    <button class="button secondary" id="edit-profile-button" type="button">Edit profile</button>
+                    <button class="button primary" id="edit-requirements-button" type="button">Change subjects</button>
+                </div>
+                <div class="account-actions"><button class="button secondary" id="sign-out-button" type="button">Sign out</button></div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f3f5f7">
+    <title>AI Search Assistant</title>
+    <link rel="stylesheet" href="assistant.css">
+    <script src="assistant.js" defer></script>
+</head>
+<body>
+    <main class="assistant-page">
+        <header class="page-header">
+            <a class="back-link" href="/">← Back to planner</a>
+            <p class="eyebrow">SMART AI</p>
+            <h1>Local AI search assistant</h1>
+            <p class="intro">Ollama generates answers on your computer. DuckDuckGo searches the web for relevant sources; only your current question is sent to the search provider.</p>
+        </header>
+
+        <section class="assistant-card" aria-label="AI search conversation">
+            <div class="conversation" id="conversation" role="log" aria-live="polite" aria-relevant="additions">
+                <article class="message assistant-message">
+                    <p>Hi! What would you like to explore?</p>
+                </article>
+            </div>
+            <p class="status" id="assistant-status" role="status" aria-live="polite">Checking your sign-in…</p>
+            <form class="question-form" id="question-form">
+                <label for="question">Your question</label>
+                <textarea id="question" name="question" rows="3" maxlength="1600" placeholder="Ask about a topic, idea, or current event…" required></textarea>
+                <div class="form-footer">
+                    <span class="hint">Search queries go to DuckDuckGo. Local AI answers can still make mistakes.</span>
+                    <button id="send-button" type="submit">Search &amp; ask</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,347 @@
+:root {
+    --ink: #293240;
+    --muted: #687584;
+    --paper: #f3f5f7;
+    --paper-strong: #fff;
+    --green: #7267ef;
+    --green-dark: #5b50d6;
+    --green-soft: #eeedfd;
+    --line: #dbe0e5;
+    --coral: #ea4d4d;
+    --gold: #ffa21d;
+    --shadow: rgba(27, 46, 94, 0.08);
+}
+
+body {
+    background: #f3f5f7;
+    color: var(--ink);
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.brand {
+    z-index: 20;
+    color: #1c232f;
+}
+
+.brand-mark {
+    background: #7267ef;
+    box-shadow: 0 8px 18px rgba(114, 103, 239, 0.24);
+}
+
+.intro h1 span,
+.eyebrow,
+.screen h2,
+.dashboard-section h3 {
+    color: var(--green);
+}
+
+.form-panel {
+    border-color: #e3e7ec;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(27, 46, 94, 0.08);
+    backdrop-filter: none;
+}
+
+.button {
+    border-color: var(--green);
+    border-radius: 6px;
+    background: var(--green);
+    box-shadow: 0 3px 8px rgba(114, 103, 239, 0.2);
+}
+
+.button:hover {
+    background: var(--green-dark);
+    box-shadow: 0 5px 12px rgba(114, 103, 239, 0.24);
+}
+
+.button.secondary {
+    border-color: #dbe0e5;
+    color: var(--green-dark);
+}
+
+.button.secondary:hover {
+    background: #f5f4ff;
+}
+
+#auth-form .button {
+    width: 100%;
+}
+
+input,
+textarea,
+select {
+    border-radius: 6px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(114, 103, 239, 0.14);
+}
+
+.dashboard-sidebar-nav {
+    display: none;
+}
+
+.dashboard-active {
+    min-height: 100vh;
+    background: #f3f5f7;
+}
+
+.dashboard-active .brand {
+    position: fixed;
+    top: 22px;
+    left: 24px;
+    color: #fff;
+}
+
+.dashboard-active .brand-mark {
+    background: #7267ef;
+}
+
+.dashboard-active .page {
+    display: block;
+    width: calc(100% - 260px);
+    max-width: none;
+    min-height: 100vh;
+    margin: 0 0 0 260px;
+    padding: 82px 36px 36px;
+}
+
+.dashboard-active .intro {
+    position: fixed;
+    z-index: 15;
+    top: 0;
+    bottom: auto;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    min-height: 100vh;
+    padding: 88px 16px 20px;
+    background: #1c232f;
+}
+
+.dashboard-active .intro > .eyebrow,
+.dashboard-active .intro > h1,
+.dashboard-active .intro > .intro-copy {
+    display: none;
+}
+
+.dashboard-active .dashboard-sidebar-nav {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    height: 100%;
+}
+
+.sidebar-nav-heading {
+    margin: 0 8px 8px;
+    color: #8996a4;
+    font: 700 10px/1.5 Inter, "Segoe UI", Arial, sans-serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.dashboard-active .dashboard-tab {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #aeb8c4;
+    text-align: left;
+    font: 600 13px/1.4 Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.dashboard-active .dashboard-tab:hover {
+    background: #252e3b;
+    color: #fff;
+}
+
+.dashboard-active .dashboard-tab.active {
+    background: rgba(114, 103, 239, 0.18);
+    color: #fff;
+    box-shadow: inset 3px 0 #7267ef;
+}
+
+.dashboard-active .dashboard-tab .icon {
+    width: 18px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: auto 0 0;
+    padding: 14px 6px 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font: 12px/1.4 Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.sidebar-avatar {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    background: #7267ef;
+    font-weight: 700;
+}
+
+.sidebar-user strong,
+.sidebar-user small {
+    display: block;
+}
+
+.sidebar-user small {
+    margin-top: 2px;
+    color: #aeb8c4;
+}
+
+.dashboard-active .form-panel {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.dashboard-active .schedule-screen > h2 {
+    margin-bottom: 8px;
+    color: #1c232f;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.dashboard-active .screen-copy {
+    color: #687584;
+}
+
+.dashboard-active .dashboard-stepper {
+    margin: 20px 0 24px;
+    padding: 18px;
+    border: 1px solid #e3e7ec;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 6px -1px rgba(27, 46, 94, 0.08);
+}
+
+.dashboard-active .dashboard-stepper-heading {
+    color: #293240;
+    letter-spacing: 0;
+}
+
+.dashboard-active .dashboard-step-progress,
+.dashboard-active .progress-track,
+.dashboard-active .chart-track {
+    background: #edf0f4;
+}
+
+.dashboard-active .dashboard-step-progress-fill,
+.dashboard-active .progress-fill {
+    background: #7267ef;
+}
+
+.dashboard-active .dashboard-section {
+    margin: 18px 0;
+    padding: 20px;
+    border: 1px solid #e3e7ec;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 6px -1px rgba(27, 46, 94, 0.08);
+}
+
+.dashboard-active .dashboard-section h3 {
+    color: #1c232f;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.dashboard-active .dashboard-card {
+    border-color: #e3e7ec;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.dashboard-active .dashboard-card h4 {
+    color: #5b50d6;
+}
+
+.dashboard-active .dashboard-step-actions .button {
+    min-height: 38px;
+}
+
+.dashboard-active .schedule-day {
+    border-radius: 4px;
+    background: #f8f9fb;
+}
+
+@media (max-width: 760px) {
+    .dashboard-active .brand {
+        top: 18px;
+        left: 18px;
+    }
+
+    .dashboard-active .intro {
+        position: relative;
+        inset: auto;
+        width: auto;
+        height: auto;
+        padding: 68px 16px 12px;
+    }
+
+    .dashboard-active .dashboard-sidebar-nav {
+        display: flex;
+        height: auto;
+        gap: 5px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .sidebar-nav-heading,
+    .sidebar-user {
+        display: none;
+    }
+
+    .dashboard-active .dashboard-tab {
+        min-width: max-content;
+        min-height: 40px;
+        padding: 0 10px;
+    }
+
+    .dashboard-active .dashboard-tab.active {
+        box-shadow: inset 0 -3px #7267ef;
+    }
+
+    .dashboard-active .page {
+        width: auto;
+        min-height: auto;
+        margin: 0;
+        padding: 22px 18px 30px;
+    }
+
+    .dashboard-active .form-panel {
+        max-width: none;
+    }
+}
+
+@media (max-width: 420px) {
+    .dashboard-active .page {
+        padding-inline: 14px;
+    }
+
+    .dashboard-active .dashboard-section {
+        padding: 16px;
+    }
+}
